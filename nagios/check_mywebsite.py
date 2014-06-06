@@ -87,7 +87,7 @@ if len(values):
     mean = sum(values)/len(values)
 
 # Build Output
-output = status.get("code_str", state_str)
+output = status.get("state_code_str", state_str)
 
 if mean is not None:
     output = "{0}, Mean response time: {1}ms".format(
