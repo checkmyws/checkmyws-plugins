@@ -26,5 +26,6 @@ For the script to work you must enable [status page](http://wooster.checkmy.ws/2
 You can found `check_id` in URL of [console](https://console.checkmy.ws)
 
 Ex:
+
     $ ./check_mywebsite.py -f 95c81e64-48af-4190-acb7-48bd659ea903
     200 Ok, Mean response time: 123ms | DE:FRA:OVH:DC=167ms;;;; FR:PAR:OVH:DC=79ms;;;;
