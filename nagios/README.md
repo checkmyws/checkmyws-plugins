@@ -31,13 +31,14 @@ Options:
   -v --verbose     Verbose.
 ```
 
-For the script to work you must enable [status page](http://wooster.checkmy.ws/2014/05/checkmyws-status-page/):
-
-![](../doc/status_page.jpg)
-
 You will find `check_id` in `Settings` tabs with `advance mode` enable:
 
 ![](../doc/check_id.jpg)
+
+
+For the script to work you must enable [status page](http://wooster.checkmy.ws/2014/05/checkmyws-status-page/):
+
+![](../doc/status_page.jpg)
 
 Ex:
 
