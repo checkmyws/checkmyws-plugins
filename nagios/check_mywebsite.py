@@ -4,13 +4,14 @@
 """Check my Website plugin.
 
 Usage:
-  check_mywebsite.py [(-v | --verbose)] [--proxy=<proxy>] [-f] <check_id>
+  check_mywebsite.py [(-v | --verbose)] [--proxy=<proxy>] [-e] [-f] <check_id>
   check_mywebsite.py (-h | --help)
   check_mywebsite.py (-V | --version)
 
 Options:
   -f               Display perfdata.
   --proxy=<proxy>  Proxy URL.
+  -e               Extra output.
 
   -h --help        Show this screen.
   -V --version     Show version.
@@ -77,10 +78,9 @@ def main():
         sys.exit(3)
 
     check_id = arguments["<check_id>"]
-    verbose = arguments['--verbose']
     proxy = arguments.get("--proxy", None)
 
-    if verbose is True:
+    if arguments['--verbose'] is True:
         logger.setLevel(logging.DEBUG)
 
     logger.debug("Command line arguments:\n%s", arguments)
@@ -154,6 +154,17 @@ def main():
         output = "{0}, Mean response time: {1}ms".format(
             output,
             mean_time
+        )
+
+
+    if arguments['-e'] is True:
+        check_url = "https://console.checkmy.ws/#/dashboard?_id={0}".format(
+           check_id 
+        )
+
+        output = "{0}, Goto <a href='{1}'>console overview</a>".format(
+            output,
+            check_url
         )
 
     if arguments['-f'] is True and perfdata:
