@@ -3,7 +3,13 @@
 ## Dependencies
 
     pip install --upgrade checkmyws-python docopt
-    
+
+## Install
+```
+wget --no-check-certificate https://raw.githubusercontent.com/checkmyws/checkmyws-plugins/master/nagios/check_mywebsite.py
+chmod +x check_mywebsite.py
+```
+
 ## Usage
 
 ```
