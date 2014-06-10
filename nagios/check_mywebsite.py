@@ -144,6 +144,7 @@ def main():
 
     # Build Perfdata
     logger.debug("Perfdata: %s", perfdata)
+    perfdata = [m for m in perfdata if len(m)]
     perfdata = " ".join(perfdata)
 
     # Build Output
