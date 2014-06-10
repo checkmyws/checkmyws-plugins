@@ -23,7 +23,7 @@ Options:
 ```
 
 For the script to work you must enable [status page](http://wooster.checkmy.ws/2014/05/checkmyws-status-page/).
-You can found `check_id` in URL of [console](https://console.checkmy.ws)
+You will find `check_id` in URL of [console](https://console.checkmy.ws)
 
 Ex:
 
