@@ -10,8 +10,8 @@ Usage:
 
 Options:
   -f               Display perfdata.
+  -e               Display extra output.
   --proxy=<proxy>  Proxy URL.
-  -e               Extra output.
 
   -h --help        Show this screen.
   -V --version     Show version.
@@ -155,7 +155,6 @@ def main():
             output,
             mean_time
         )
-
 
     if arguments['-e'] is True:
         check_url = "https://console.checkmy.ws/#/dashboard?_id={0}".format(
