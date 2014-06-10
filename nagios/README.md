@@ -23,15 +23,19 @@ Usage:
 
 Options:
   -f               Display perfdata.
+  -e               Display extra output.
   --proxy=<proxy>  Proxy URL.
-
+  
   -h --help        Show this screen.
   -V --version     Show version.
   -v --verbose     Verbose.
 ```
 
-For the script to work you must enable [status page](http://wooster.checkmy.ws/2014/05/checkmyws-status-page/).
-You will find `check_id` in URL of [console](https://console.checkmy.ws)
+For the script to work you must enable [status page](http://wooster.checkmy.ws/2014/05/checkmyws-status-page/):
+![](../doc/status_page.jpg)
+
+You will find `check_id` in `Settings` tabs with `advance mode` enable:
+![](../doc/check_id.jpg)
 
 Ex:
 
