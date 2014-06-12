@@ -31,7 +31,7 @@ Options:
   -v --verbose     Verbose.
 ```
 
-You will find `check_id` in `Settings` tabs with `advance mode` enable:
+You can find the `check_id` in the `Settings` tab with `advance mode` enabled:
 
 ![](../doc/check_id.jpg)
 
