@@ -157,13 +157,18 @@ def main():
         )
 
     if arguments['-e'] is True:
-        check_url = "https://console.checkmy.ws/#/dashboard?_id={0}".format(
-           check_id 
+        status_url = "http://{0}.status.checkmy.ws".format(
+           check_id
         )
 
-        output = "{0}, Goto <a href='{1}'>console overview</a>".format(
+        console_url = "https://console.checkmy.ws/#/dashboard?_id={0}".format(
+           check_id
+        )
+
+        output = "{0} [<a href='{1}'>status page</a>] [<a href='{2}'>console</a>]".format(
             output,
-            check_url
+            status_url,
+            console_url
         )
 
     if arguments['-f'] is True and perfdata:
