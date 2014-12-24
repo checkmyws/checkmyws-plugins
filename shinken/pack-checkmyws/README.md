@@ -33,7 +33,7 @@ chmod +x /usr/lib64/nagios/plugins/check_mywebsite.py
 
 ## shinken-2.x
 
-shinken install pack-checkmyws
+shinken install check_mywebsite
 
 # Adding your websites from checkmy.ws to shinken
 
