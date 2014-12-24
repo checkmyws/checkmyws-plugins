@@ -6,11 +6,11 @@ Plugins for [Check my Website](http://www.checkmy.ws)
 
 A working setup of shinken (1.4 or 2.x). You also need to install the following python modules :
 
-- docopt
-- checkmyws
+ - checkmyws-python
+ - docopt 
 
 ```
-pip install docopt checkmyws
+pip install docopt checkmyws-python
 ```
 
 # Install pack 
