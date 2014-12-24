@@ -1,4 +1,4 @@
 checkmyws-plugins
 =================
 
-Plugins for [Check my Website](http://www.checkmy.ws)
+Plugins for [Check my Website](https://checkmy.ws)
