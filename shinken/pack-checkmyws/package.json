@@ -23,8 +23,8 @@
 	"keywords": [
 	  "pack",
 	  "web",
-	  "network",
-	  "http"
+	  "http",
+	  "checkmyws"
 	],
 	"dependencies": {
 	  "shinken": ">=1.4"
