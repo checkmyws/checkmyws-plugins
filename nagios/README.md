@@ -17,15 +17,18 @@ $ ./check_mywebsite.py -h
 Check my Website plugin.
 
 Usage:
-  check_mywebsite.py [(-v | --verbose)] [--proxy=<proxy>] [-f] <check_id>
+  check_mywebsite.py [(-v | --verbose)] [--proxy=<proxy>] [-e] [-f | -g] <check_id>
   check_mywebsite.py (-h | --help)
   check_mywebsite.py (-V | --version)
 
 Options:
-  -f               Display perfdata.
-  -e               Display extra output.
+  -f               Display Nagios perfdata.
+  -g               Display Graphite perfdata.
+
+  -e               Display extra output (Nagios like only).
+
   --proxy=<proxy>  Proxy URL.
-  
+
   -h --help        Show this screen.
   -V --version     Show version.
   -v --verbose     Verbose.
