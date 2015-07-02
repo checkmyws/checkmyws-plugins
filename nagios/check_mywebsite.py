@@ -4,7 +4,7 @@
 """Check my Website plugin.
 
 Usage:
-  check_mywebsite.py [(-v | --verbose)] [--proxy=<proxy>] [-e] [-f] [-g] <check_id>
+  check_mywebsite.py [(-v | --verbose)] [--proxy=<proxy>] [-e] [-f | -g] <check_id>
   check_mywebsite.py (-h | --help)
   check_mywebsite.py (-V | --version)
 
