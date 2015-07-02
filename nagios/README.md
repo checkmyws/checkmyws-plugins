@@ -6,7 +6,7 @@
 
 ## Install
 ```
-wget --no-check-certificate https://raw.githubusercontent.com/checkmyws/checkmyws-plugins/master/nagios/check_mywebsite.py
+wget https://raw.githubusercontent.com/checkmyws/checkmyws-plugins/master/nagios/check_mywebsite.py
 chmod +x check_mywebsite.py
 ```
 
@@ -31,7 +31,7 @@ Options:
   -v --verbose     Verbose.
 ```
 
-You will find `check_id` in `Settings` tabs with `advance mode` enable:
+You can find the `check_id` in the `Settings` tab with `advance mode` enabled:
 
 ![](../doc/check_id.jpg)
 

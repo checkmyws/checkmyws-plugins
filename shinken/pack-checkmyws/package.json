@@ -1,0 +1,33 @@
+{
+	"name": "check_mywebsite",
+	"types": ["pack"],
+	"version": "1.4",
+	"homepage": "https://github.com/checkmyws/checkmyws-plugins/",
+	"author": "Check my Website",
+	"description": "Website checks with Check my Website",
+	"contributors": [
+	  {
+		"name": "William Pain",
+		"email": "pain.william@gmail.com"
+	  },
+	  {
+		"name": "Olivier Jan",
+		"email": "olivierjan.com@gmail.com"
+	  },
+	  {
+		"name": "David Guénault",
+		"email": "david.guenault@gmail.com"
+	  } 
+	],
+	"repository": "https://github.com/checkmyws/checkmyws-plugins/tree/master/shinken",
+	"keywords": [
+	  "pack",
+	  "web",
+	  "http",
+	  "checkmyws"
+	],
+	"dependencies": {
+	  "shinken": ">=1.4"
+	},
+	"license": "AGPL"
+}
