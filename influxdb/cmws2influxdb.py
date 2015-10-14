@@ -4,11 +4,12 @@
 """Check my Website to InfluxDB
 
 Usage:
-  cmws2influxdb.py [-v] <check_id>... [--influxdb=<influxdb>]
+  cmws2influxdb.py [-v] [-f] <check_id>... [--influxdb=<influxdb>]
 
 Options:
   -h --help              Show this screen
   -v                     Verbose
+  -f                     Force plugin to send values as float
   <check_id>             Check id
   --influxdb=<influxdb>  influxdb DSN       [default: influxdb://<user>:<password>@localhost:8086/<database>]
 """
@@ -62,7 +63,7 @@ def influxdb_write(influxdb, metric):
         logger.error("InfluxDB Impossible to write data %s: %s", metric, err)
 
 
-def get_data_from_cmws(check_id):
+def get_data_from_cmws(check_id, asfloat=False):
     # Get data from Check my Website
     cmws = CheckmywsClient()
     raw = cmws.status(check_id)
@@ -90,6 +91,9 @@ def get_data_from_cmws(check_id):
             'path': path
         }
 
+        if asfloat:
+            value = float(asfloat)
+
         metric = influxdb_format(
             "httptime",
             tags,
@@ -108,6 +112,9 @@ def get_data_from_cmws(check_id):
             'location': location,
             'path': path
         }
+
+        if asfloat:
+            value = float(asfloat)
 
         metric = influxdb_format(
             "state",
@@ -131,6 +138,9 @@ def get_data_from_cmws(check_id):
             'path': path
         }
 
+        if asfloat:
+            value = float(asfloat)
+
         metric = influxdb_format(
             label,
             tags,
@@ -147,6 +157,7 @@ if __name__ == '__main__':
 
     influxdb_dsn = arguments['--influxdb']
     verbose = arguments['-v']
+    asfloat = arguments['-f']
 
     if arguments['<check_id>'] is not None:
         check_ids = arguments['<check_id>']
@@ -162,7 +173,7 @@ if __name__ == '__main__':
     metrics = []
 
     for check_id in check_ids:
-        metrics += get_data_from_cmws(check_id)
+        metrics += get_data_from_cmws(check_id, asfloat)
 
     influxdb = InfluxDBClient.from_DSN(influxdb_dsn, timeout=1)
 
