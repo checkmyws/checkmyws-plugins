@@ -126,7 +126,10 @@ def get_data_from_cmws(check_id, asfloat=False):
         metrics.append(metric)
 
     # Metas
-    blacklist = ('title', 'lastcheck', 'laststatechange_bin', 'laststatechange')
+    blacklist = (
+        'title', 'lastcheck', 'laststatechange_bin', 'laststatechange',
+        'dns_expiration_timestamp', 'ssl_cert_expiration_timestamp'
+    )
     for (label, value) in raw["metas"].items():
         if label in blacklist:
             continue
