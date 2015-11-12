@@ -81,17 +81,27 @@ def get_data_from_cmws(check_id, asfloat=False):
 
     timestamp = raw["metas"]["lastcheck"]
 
-    tags = {
-        '_id': check_id,
-        'url': url_raw,
-        'hostname': hostname,
-        'path': path
-    }
+    tags = raw.get("tags", None)
+
+    if isinstance(tags, list):
+        tags = [t.split(':') for t in tags if ':' in t]
+        tags = dict(tags)
+
+    else:
+        tags = {}
+
+    tags["_id"] = check_id
+    tags["url"] = url_raw
+    tags["hostname"] = hostname
+    tags["path"] = path
+
+    if raw.get("name", None):
+        tags['name'] = raw["name"]
 
     # Httptime by location
     for (location, value) in raw["lastvalues"]["httptime"].items():
         t = dict(tags)
-        t['location'] = location
+        t["location"] = location
 
         if asfloat:
             value = float(asfloat)
@@ -108,7 +118,7 @@ def get_data_from_cmws(check_id, asfloat=False):
     # States by location
     for (location, value) in raw["states"].items():
         t = dict(tags)
-        t['location'] = location
+        t["location"] = location
 
         if asfloat:
             value = float(asfloat)
