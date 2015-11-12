@@ -37,7 +37,7 @@ except:
 
 try:
     from checkmyws import CheckmywsClient
-except:
+except ImportError as err:
     logger.error("Error: please install Check my Website client 'pip install checkmyws-python'")
     sys.exit(1)
 
@@ -81,22 +81,24 @@ def get_data_from_cmws(check_id, asfloat=False):
 
     timestamp = raw["metas"]["lastcheck"]
 
+    tags = {
+        '_id': check_id,
+        'url': url_raw,
+        'hostname': hostname,
+        'path': path
+    }
+
     # Httptime by location
     for (location, value) in raw["lastvalues"]["httptime"].items():
-        tags = {
-            '_id': check_id,
-            'url': url_raw,
-            'hostname': hostname,
-            'location': location,
-            'path': path
-        }
+        t = dict(tags)
+        t['location'] = location
 
         if asfloat:
             value = float(asfloat)
 
         metric = influxdb_format(
             "httptime",
-            tags,
+            t,
             value,
             timestamp
         )
@@ -105,20 +107,15 @@ def get_data_from_cmws(check_id, asfloat=False):
 
     # States by location
     for (location, value) in raw["states"].items():
-        tags = {
-            '_id': check_id,
-            'url': url_raw,
-            'hostname': hostname,
-            'location': location,
-            'path': path
-        }
+        t = dict(tags)
+        t['location'] = location
 
         if asfloat:
             value = float(asfloat)
 
         metric = influxdb_format(
             "state",
-            tags,
+            t,
             value,
             timestamp
         )
@@ -133,13 +130,6 @@ def get_data_from_cmws(check_id, asfloat=False):
     for (label, value) in raw["metas"].items():
         if label in blacklist:
             continue
-
-        tags = {
-            '_id': check_id,
-            'url': url_raw,
-            'hostname': hostname,
-            'path': path
-        }
 
         if asfloat:
             value = float(asfloat)
