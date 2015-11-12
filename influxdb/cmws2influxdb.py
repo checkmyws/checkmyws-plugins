@@ -90,10 +90,12 @@ def get_data_from_cmws(check_id, asfloat=False):
     else:
         tags = {}
 
-    tags["_id"] = check_id
-    tags["url"] = url_raw
-    tags["hostname"] = hostname
-    tags["path"] = path
+    tags.update({
+        "_id": check_id,
+        "url": url_raw,
+        "hostname": hostname,
+        "path": path
+    })
 
     if raw.get("name", None):
         tags['name'] = raw["name"]
