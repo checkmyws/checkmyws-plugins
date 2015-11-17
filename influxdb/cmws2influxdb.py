@@ -48,7 +48,7 @@ def influxdb_format(measurement, tags, value, timestamp):
         "points": [{
             "measurement": measurement,
             "fields": {"value": value},
-            "time": timestamp * 1000000000
+            "time": int(timestamp * 1000000000)
         }]
     }
 
