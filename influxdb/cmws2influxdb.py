@@ -42,17 +42,6 @@ except ImportError as err:
     sys.exit(1)
 
 
-def influxdb_format(measurement, tags, value, timestamp):
-    return {
-        "tags": tags,
-        "points": [{
-            "measurement": measurement,
-            "fields": {"value": value},
-            "time": int(timestamp * 1000000000)
-        }]
-    }
-
-
 def influxdb_write(influxdb, metric):
     logger.debug("InfluxDB Write: %s", metric)
 
@@ -62,6 +51,14 @@ def influxdb_write(influxdb, metric):
     except Exception as err:
         logger.error("InfluxDB Impossible to write data %s: %s", metric, err)
 
+def worker_to_tags(location, worker):
+    return {
+        'location': location,
+        'city': worker['city'],
+        'bandwidth': worker['bandwidth'],
+        'isp': worker['isp'],
+        'country': worker['country']
+    }
 
 def get_data_from_cmws(check_id, asfloat=False):
     # Get data from Check my Website
@@ -80,17 +77,20 @@ def get_data_from_cmws(check_id, asfloat=False):
         path = "/"
 
     timestamp = raw["metas"]["lastcheck"]
+    timestamp = int(timestamp * 1000000000)
 
-    tags = raw.get("tags", None)
+    # Extract tags from tags list
+    static_tags = raw.get("tags", None)
 
-    if isinstance(tags, list):
-        tags = [t.split(':') for t in tags if ':' in t]
-        tags = dict(tags)
+    if isinstance(static_tags, list):
+        static_tags = [t.split(':') for t in static_tags if ':' in t]
+        static_tags = dict(static_tags)
 
     else:
-        tags = {}
+        static_tags = {}
 
-    tags.update({
+    # Merge tags
+    static_tags.update({
         "_id": check_id,
         "url": url_raw,
         "hostname": hostname,
@@ -98,64 +98,82 @@ def get_data_from_cmws(check_id, asfloat=False):
     })
 
     if raw.get("name", None):
-        tags['name'] = raw["name"]
+        static_tags['name'] = raw["name"]
 
-    # Httptime by location
-    for (location, value) in raw["lastvalues"]["httptime"].items():
-        t = dict(tags)
-        t["location"] = location
+    logger.debug("Timestamp:   %s", timestamp)
+    logger.debug("Static_tags: %s", static_tags)
 
-        if asfloat:
-            value = float(asfloat)
+    points = []
 
-        metric = influxdb_format(
-            "httptime",
-            t,
-            value,
-            timestamp
-        )
+    # Metrics
+    for metric in ("httptime", "dnstime"):
+        values = raw["lastvalues"].get(metric, None)
 
-        metrics.append(metric)
+        if values is None:
+            continue
+
+        for (location, value) in values.items():
+            if asfloat:
+                value = float(asfloat)
+
+            worker = raw["workers"][location]
+
+            points.append({
+                "tags": worker_to_tags(location, worker),
+                "measurement": metric,
+                "fields": {"value": value},
+                "time": timestamp
+            })
 
     # States by location
     for (location, value) in raw["states"].items():
-        t = dict(tags)
-        t["location"] = location
-
         if asfloat:
             value = float(asfloat)
 
-        metric = influxdb_format(
-            "state",
-            t,
-            value,
-            timestamp
-        )
+        worker = raw["workers"][location]
 
-        metrics.append(metric)
+        points.append({
+            "tags": worker_to_tags(location, worker),
+            "measurement": "state",
+            "fields": {"value": value},
+            "time": timestamp
+        })
 
     # Metas
-    blacklist = (
-        'title', 'lastcheck', 'laststatechange_bin', 'laststatechange',
-        'dns_expiration_timestamp', 'ssl_cert_expiration_timestamp'
+    whitelist = (
+        "base64Size",
+        "code",
+        "contentLength",
+        "cssSize",
+        "htmlSize",
+        "imageSize",
+        "jsErrors",
+        "jsSize",
+        "notFound",
+        "otherSize",
+        "redirects",
+        "requests",
+        "webfontSize",
+        "yslow_page_load_time",
+        "yslow_score"
     )
+
     for (label, value) in raw["metas"].items():
-        if label in blacklist:
+        if label not in whitelist:
             continue
 
         if asfloat:
             value = float(asfloat)
 
-        metric = influxdb_format(
-            label,
-            tags,
-            value,
-            timestamp
-        )
+        points.append({
+            "measurement": label,
+            "fields": {"value": value},
+            "time": timestamp
+        })
 
-        metrics.append(metric)
+    logger.debug("Points: %s", len(points))
 
-    return metrics
+    return {"tags": static_tags, "points": points}
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
@@ -178,7 +196,9 @@ if __name__ == '__main__':
     metrics = []
 
     for check_id in check_ids:
-        metrics += get_data_from_cmws(check_id, asfloat)
+        metrics.append(
+            get_data_from_cmws(check_id, asfloat)
+        )
 
     influxdb = InfluxDBClient.from_DSN(influxdb_dsn, timeout=1)
 
