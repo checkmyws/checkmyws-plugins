@@ -4,13 +4,14 @@
 """Check my Website to InfluxDB
 
 Usage:
-  cmws2influxdb.py [-v] [-f] [--influxdb=<influxdb>] <check_id>...
+  cmws2influxdb.py [-v] [-f] [--api=<api>] [--influxdb=<influxdb>] <check_id>...
 
 Options:
   -h --help              Show this screen
   -v                     Verbose
   -f                     Force plugin to send values as float
   <check_id>             Check id
+  --api=<api>            API URL            [default: https://api.checkmy.ws/api]
   --influxdb=<influxdb>  influxdb DSN       [default: influxdb://<user>:<password>@localhost:8086/<database>]
 """
 
@@ -41,6 +42,8 @@ except ImportError as err:
     logger.error("Error: please install Check my Website client 'pip install checkmyws-python'")
     sys.exit(1)
 
+import checkmyws.client
+
 
 def influxdb_write(influxdb, metric):
     logger.debug("InfluxDB Write: %s", metric)
@@ -62,7 +65,6 @@ def worker_to_tags(location, worker):
 
 def get_data_from_cmws(check_id, asfloat=False):
     # Get data from Check my Website
-    cmws = CheckmywsClient()
     raw = cmws.status(check_id)
 
     metrics = []
@@ -181,6 +183,14 @@ if __name__ == '__main__':
     influxdb_dsn = arguments['--influxdb']
     verbose = arguments['-v']
     asfloat = arguments['-f']
+
+    checkmyws.client.BASE_URL = arguments['--api']
+    ssl_verify = True
+
+    if 'dev' in checkmyws.client.BASE_URL:
+        ssl_verify = False
+
+    cmws = CheckmywsClient(verify=ssl_verify)
 
     if arguments['<check_id>'] is not None:
         check_ids = arguments['<check_id>']
