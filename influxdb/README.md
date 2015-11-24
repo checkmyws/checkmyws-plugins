@@ -3,7 +3,7 @@
 
     pip install docopt influxdb checkmyws-python
 
-Check if public access on your `check` is enable, see (Nagios example)[https://github.com/checkmyws/checkmyws-plugins/tree/master/nagios].
+Check if public access on your `check` is enable, see [Nagios example]([https://github.com/checkmyws/checkmyws-plugins/tree/master/nagios).
 
 ## Usage
 
