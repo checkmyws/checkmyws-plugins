@@ -4,7 +4,7 @@
 """Check my Website to InfluxDB
 
 Usage:
-  cmws2influxdb.py [-v] [-f] <check_id>... [--influxdb=<influxdb>]
+  cmws2influxdb.py [-v] [-f] [--influxdb=<influxdb>] <check_id>...
 
 Options:
   -h --help              Show this screen
