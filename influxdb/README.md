@@ -11,13 +11,14 @@ Check if public access on your `check` is enable, see [Nagios example]([https://
 Check my Website to InfluxDB
 
 Usage:
-  cmws2influxdb.py [-v] [-f] [--influxdb=<influxdb>] <check_id>...
+  cmws2influxdb.py [-v] [-f] [--api=<api>] [--influxdb=<influxdb>] <check_id>...
 
 Options:
   -h --help              Show this screen
   -v                     Verbose
   -f                     Force plugin to send values as float
   <check_id>             Check id
+  --api=<api>            API URL            [default: https://api.checkmy.ws/api]
   --influxdb=<influxdb>  influxdb DSN       [default: influxdb://<user>:<password>@localhost:8086/<database>]
 ```
 
