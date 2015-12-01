@@ -116,7 +116,7 @@ def get_data_from_cmws(check_id, asfloat=False):
 
         for (location, value) in values.items():
             if asfloat:
-                value = float(asfloat)
+                value = float(value)
 
             worker = raw["workers"][location]
 
@@ -130,7 +130,7 @@ def get_data_from_cmws(check_id, asfloat=False):
     # States by location
     for (location, value) in raw["states"].items():
         if asfloat:
-            value = float(asfloat)
+            value = float(value)
 
         worker = raw["workers"][location]
 
@@ -165,7 +165,7 @@ def get_data_from_cmws(check_id, asfloat=False):
             continue
 
         if asfloat:
-            value = float(asfloat)
+            value = float(value)
 
         points.append({
             "measurement": label,
