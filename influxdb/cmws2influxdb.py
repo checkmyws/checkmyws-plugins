@@ -113,6 +113,7 @@ def get_data_from_cmws(check_id, asfloat=False):
 
         if values is None:
             continue
+  
         measurement = metric
         
         if metric == 'state':
@@ -126,7 +127,7 @@ def get_data_from_cmws(check_id, asfloat=False):
 
             points.append({
                 "tags": worker_to_tags(location, worker),
-                "measurement": metric,
+                "measurement": measurement,
                 "fields": {"value": value},
                 "time": timestamp
             })
