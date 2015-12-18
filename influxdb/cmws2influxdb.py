@@ -113,20 +113,25 @@ def get_data_from_cmws(check_id, asfloat=False):
 
         if values is None:
             continue
-  
+
         measurement = metric
-        
+
         if metric == 'state':
           measurement = 'state_pct'
-  
+
         for (location, value) in values.items():
             if asfloat:
                 value = float(value)
 
-            worker = raw["workers"][location]
+            worker = raw["workers"].get(location, None)
+
+            if worker is None:
+                tags = {'location': location}
+            else:
+                tags = worker_to_tags(location, worker)
 
             points.append({
-                "tags": worker_to_tags(location, worker),
+                "tags": tags,
                 "measurement": measurement,
                 "fields": {"value": value},
                 "time": timestamp
