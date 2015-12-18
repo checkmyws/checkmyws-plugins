@@ -108,12 +108,16 @@ def get_data_from_cmws(check_id, asfloat=False):
     points = []
 
     # Metrics
-    for metric in ("httptime", "dnstime"):
+    for metric in ("httptime", "dnstime", "state"):
         values = raw["lastvalues"].get(metric, None)
 
         if values is None:
             continue
-
+        measurement = metric
+        
+        if metric == 'state':
+          measurement = 'state_pct'
+  
         for (location, value) in values.items():
             if asfloat:
                 value = float(value)
