@@ -4,7 +4,7 @@
 """Check my Website plugin.
 
 Usage:
-  check_mywebsite.py [(-v | --verbose)] [--proxy=<proxy>] [-e] [-f | -g] <check_id>
+  check_mywebsite.py [(-v | --verbose)] [--proxy=<proxy>] [--url=<url>] [-e] [-f | -g] <check_id>
   check_mywebsite.py (-h | --help)
   check_mywebsite.py (-V | --version)
 
@@ -15,6 +15,7 @@ Options:
   -e               Display extra output (Nagios like only).
 
   --proxy=<proxy>  Proxy URL.
+  --url=<url>      API URL.
 
   -h --help        Show this screen.
   -V --version     Show version.
@@ -209,8 +210,11 @@ def main():
 
     logger.debug("Proxy: %s", proxy)
 
+    url = arguments.get("--url", None)
+    logger.debug("URL: %s", url)
+
     # Get status from API
-    client = CheckmywsClient(proxy=proxy)
+    client = CheckmywsClient(proxy=proxy, url=url)
 
     try:
         status = client.status(check_id)
