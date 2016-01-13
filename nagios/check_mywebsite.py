@@ -80,8 +80,7 @@ def perfdata2string(label, value, unit='', warn='', crit='', min='', max=''):
 ###################
 
 
-def output_nagios(name, timestamp, metrics_states, metrics_httptime,
-                  metrics_metas, arguments, check_id, state_code_str):
+def output_nagios(name, timestamp, metrics, arguments, check_id, state_code_str):
 
     output = state_code_str
 
@@ -100,26 +99,50 @@ def output_nagios(name, timestamp, metrics_states, metrics_httptime,
             console_url
         )
 
-    if not arguments['-f'] or not metrics_httptime:
+    if not arguments['-f'] or not metrics:
         return output
 
     perfdata = []
 
-    for (label, value) in metrics_httptime.items():
-        perfdata.append(
-            perfdata2string(label, value, 'ms', min=0)
-        )
+    means = {}
+    sums = {}
 
-    value = metrics_metas.get('yslow_score', None)
-    if value is not None:
-        perfdata.append(
-            perfdata2string('yslow_score', value, min=0, max=100)
-        )
+    for (metric, values) in metrics.items():
+        for (location, value) in values.items():
 
-    value = metrics_metas.get('yslow_page_load_time', None)
-    if value is not None:
+            if metric in ('state'):
+                continue
+
+            elif metric in ('httptime', 'webtesttime', 'dnstime'):
+
+                if metric != 'webtesttime':
+                    means[metric] = means.get(metric, 0) + value
+                    sums[metric] = sums.get(metric, 0) + 1
+
+                perfdata.append(
+                    perfdata2string(location, value, 'ms', min=0)
+                )
+
+            elif metric in ('yslow_page_load_time'):
+                perfdata.append(
+                    perfdata2string(metric, value, 'ms', min=0)
+                )
+
+            elif metric in ('yslow_score'):
+                perfdata.append(
+                    perfdata2string(metric, value, min=0,  max=100)
+                )
+
+            else:
+                perfdata.append(
+                    perfdata2string(metric, value)
+                )
+
+    # Add means
+    for metric, value in means.items():
+        mean = value / sums[metric]
         perfdata.append(
-            perfdata2string('yslow_page_load_time', value, 'ms', min=0)
+            perfdata2string("%s_mean" % metric, mean, 'ms', min=0)
         )
 
     # Build Perfdata
@@ -250,44 +273,23 @@ def main():
     logger.debug("Metrics_states: %s", metrics_states)
 
     # Extract Perfdata
-
     lastvalues = status.get('lastvalues', {})
 
-    # Extract metrics_httptime
-    metrics_httptime = lastvalues.get('httptime', {})
-
-    # Response time by location
-    locations = [metric[0] for metric in metrics_httptime.items()]
-    values = [metric[1] for metric in metrics_httptime.items()]
-
-    logger.debug("Locations: %s", locations)
-
-    # Mean time
-    if len(values):
-        metrics_httptime['mean_time'] = sum(values) / len(values)
-
-    logger.debug("Metrics_httptime: %s", metrics_httptime)
-
-    # Extract metrics_metas
-    metrics_metas = {}
-
-    blacklist = ('title', 'lastcheck', 'laststatechange_bin', 'laststatechange', 'code')
-    labels = [label for (label, value) in metas.items() if label not in blacklist]
-
-    for label in labels:
-        metrics_metas[label] = metas[label]
-
-    logger.debug("Metrics_metas: %s", metrics_metas)
+    # Convert metas to metric
+    for label in ('yslow_page_load_time'):
+        value = metas.get(label, None)
+        if value is not None:
+            lastvalues[label]['backend'] = value
 
     # Build output
     if arguments['-g']:
         output = output_graphite(
-            name, timestamp, metrics_states, metrics_httptime, metrics_metas
+            name, timestamp, lastvalues
         )
 
     else:
         output = output_nagios(
-            name, timestamp, metrics_states, metrics_httptime, metrics_metas,
+            name, timestamp, lastvalues,
             arguments, check_id, state_code_str
         )
 
