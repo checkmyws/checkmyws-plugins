@@ -113,11 +113,14 @@ def output_nagios(name, timestamp, metrics, arguments, check_id, state_code_str)
             if metric in ('state'):
                 continue
 
-            elif metric in ('httptime', 'webtesttime', 'dnstime'):
+            elif metric in ('webtesttime'):
+                perfdata.append(
+                    perfdata2string(metric, value, 'ms', min=0)
+                )
 
-                if metric != 'webtesttime':
-                    means[metric] = means.get(metric, 0) + value
-                    sums[metric] = sums.get(metric, 0) + 1
+            elif metric in ('httptime', 'dnstime'):
+                means[metric] = means.get(metric, 0) + value
+                sums[metric] = sums.get(metric, 0) + 1
 
                 perfdata.append(
                     perfdata2string(location, value, 'ms', min=0)
