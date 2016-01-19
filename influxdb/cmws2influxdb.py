@@ -108,7 +108,7 @@ def get_data_from_cmws(check_id, asfloat=False):
     points = []
 
     # Metrics
-    for metric in ("httptime", "dnstime", "state"):
+    for metric in ("httptime", "dnstime", "state", "webtest_failures", "webtest_errors", "webtesttime", "webtest_successes", "webtest_skipped"):
         values = raw["lastvalues"].get(metric, None)
 
         if values is None:
@@ -167,7 +167,8 @@ def get_data_from_cmws(check_id, asfloat=False):
         "requests",
         "webfontSize",
         "yslow_page_load_time",
-        "yslow_score"
+        "yslow_score",
+        "webtest_state"
     )
 
     for (label, value) in raw["metas"].items():
