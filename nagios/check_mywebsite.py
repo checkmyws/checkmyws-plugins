@@ -279,10 +279,10 @@ def main():
     lastvalues = status.get('lastvalues', {})
 
     # Convert metas to metric
-    for label in ('yslow_page_load_time'):
-        value = metas.get(label, None)
-        if value is not None:
-            lastvalues[label]['backend'] = value
+    #for label in ('yslow_page_load_time'):
+    #    value = metas.get(label, None)
+    #    if value is not None:
+    #        lastvalues[label]['backend'] = value
 
     # Build output
     if arguments['-g']:
