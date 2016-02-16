@@ -110,8 +110,11 @@ def output_nagios(name, timestamp, metrics, arguments, check_id, state_code_str)
     for (metric, values) in metrics.items():
         for (location, value) in values.items():
 
+            #  Data for the availabilty rate of the website ( Ok: 100 Warning: 50 Critical: 0 )
             if metric in ('state'):
-                continue
+                perfdata.append(
+                    perfdata2string(metric, value, '%', min=0, max=100)
+                )
 
             elif metric in ('webtesttime'):
                 perfdata.append(
