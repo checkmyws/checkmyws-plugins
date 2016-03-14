@@ -4,13 +4,14 @@
 """Check my Website plugin.
 
 Usage:
-  check_mywebsite.py [(-v | --verbose)] [--proxy=<proxy>] [--url=<url>] [-e] [-f | -g] <check_id>
+  check_mywebsite.py [(-v | --verbose)] [--proxy=<proxy>] [--url=<url>] [-e] [-w] [-f | -g] <check_id>
   check_mywebsite.py (-h | --help)
   check_mywebsite.py (-V | --version)
 
 Options:
   -f               Display Nagios perfdata.
   -g               Display Graphite perfdata.
+  -w               Merge state with state of Webtest.
 
   -e               Display extra output (Nagios like only).
 
@@ -263,16 +264,41 @@ def main():
     logger.debug("URL: %s", url)
     logger.debug("Name: %s", name)
 
-    # Grab state
-    state = status.get('state', 3)
-    state_str = status.get("state_str", state)
-    state_code_str = status.get("state_code_str", state_str)
+    # Grab httpping state
+    httpping_state = metas.get('httpping_state', 3)
+    httpping_state_str = status.get("state_str", httpping_state)
+    httpping_state_code_str = status.get("state_code_str", httpping_state_str)
 
     # Invalid state
-    if state < 0:
-        state = 3
+    if httpping_state < 0:
+        httpping_state = 3
 
-    logger.debug("State: %s (%s)", state, state_str)
+    logger.debug("httpping State: %s (%s)", httpping_state, httpping_state_str)
+
+    state = httpping_state
+    state_code_str = httpping_state_str
+
+    if arguments['-w'] is True:
+        webtest_state = metas.get('webtest_state', None)
+        if webtest_state is not None:
+            # Invalid state
+            if webtest_state < 0 or webtest_state > 3:
+                webtest_state = 3
+
+            webtest_state_str = [
+                "Webtest Ok",
+                "Webtest Warning",
+                "Webtest Critical",
+                "Webtest Unknown"
+            ]
+
+            webtest_state_str = webtest_state_str[webtest_state]
+
+            if webtest_state > httpping_state:
+                state = webtest_state
+                state_code_str = webtest_state_str
+
+            logger.debug("webtest State: %s (%s)", webtest_state, webtest_state_str)
 
     # Extract metrics_states
     metrics_states = status.get('states', {})
