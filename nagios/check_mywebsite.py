@@ -264,6 +264,14 @@ def main():
     logger.debug("URL: %s", url)
     logger.debug("Name: %s", name)
 
+    # Extract metrics_states
+    metrics_states = status.get('states', {})
+    logger.debug("Metrics_states: %s", metrics_states)
+
+    # Extract Perfdata
+    lastvalues = status.get('lastvalues', {})
+    logger.debug("lastvalues: %s", lastvalues)
+
     # Grab httpping state
     httpping_state = metas.get('httpping_state', 3)
     httpping_state_str = status.get("state_str", httpping_state)
@@ -298,14 +306,13 @@ def main():
                 state = webtest_state
                 state_code_str = webtest_state_str
 
+                if state == 1:
+                    lastvalues['state']['backend'] = 50
+
+                elif state == 2:
+                    lastvalues['state']['backend'] = 0
+
             logger.debug("webtest State: %s (%s)", webtest_state, webtest_state_str)
-
-    # Extract metrics_states
-    metrics_states = status.get('states', {})
-    logger.debug("Metrics_states: %s", metrics_states)
-
-    # Extract Perfdata
-    lastvalues = status.get('lastvalues', {})
 
     # Convert metas to metric
     #for label in ('yslow_page_load_time'):
