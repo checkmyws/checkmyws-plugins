@@ -281,10 +281,13 @@ def main():
     if httpping_state < 0:
         httpping_state = 3
 
-    logger.debug("httpping State: %s (%s)", httpping_state, httpping_state_str)
+    logger.debug("httpping State: %s (%s: %s)", httpping_state, httpping_state_str, httpping_state_code_str)
 
     state = httpping_state
     state_code_str = httpping_state_str
+
+    if httpping_state_str != httpping_state_code_str:
+        state_code_str = "%s: %s" % (httpping_state_str, httpping_state_code_str)
 
     if arguments['-w'] is True:
         webtest_state = metas.get('webtest_state', None)
